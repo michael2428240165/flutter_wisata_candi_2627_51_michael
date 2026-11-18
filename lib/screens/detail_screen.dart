@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wisata_candi_2627_51/models/candi.dart';
+import 'package:flutter_wisata_candi_2627_51/providers/favorite_provider.dart';
+import 'package:flutter_wisata_candi_2627_51/screens/profile_screen.dart';
+import 'package:provider/provider.dart';
+
+
 
 class DetailScreen extends StatelessWidget {
   final Candi candi;
 
   const DetailScreen({super.key, required this.candi});
 
+
   @override
   Widget build(BuildContext context) {
+    final isFav = context
+    .watch<FavoriteProvider>()
+    .isFavorite(candi.name);
+
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -66,8 +77,13 @@ class DetailScreen extends StatelessWidget {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.favorite_border),
+                        onPressed: () {
+                              context.read<FavoriteProvider>().toggle(candi.name);
+                        },
+                        icon: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_border,
+                          color: isFav ? Colors.red : null,
+                          ),
                       ),
                     ],
                   ),
@@ -175,6 +191,17 @@ class DetailScreen extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => const ProfileScreen()),
+            );
+          },
+        child: const Icon(Icons.person),
+      ),
+
     );
   }
 }
